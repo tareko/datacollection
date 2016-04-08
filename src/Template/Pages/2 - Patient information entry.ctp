@@ -1,3 +1,4 @@
+<?php
 echo $this->Form->create($user);
 echo $this->Form->input('last name');
 echo $this->Form->input('first name');
