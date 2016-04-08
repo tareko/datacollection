@@ -1,0 +1,22 @@
+---
+# This task will install Datacollection and update to git
+
+- name: Install Kitab dependencies
+  action: apt pkg={{ item }} state=present
+  with_items:
+   - wkhtmltopdf
+
+- name: Copy configuration files
+  copy: src=core.php dest=/vagrant/datacollection/app/Config/core.php owner=www-data group=www-data mode=0600 force=no
+- copy: src=database.php dest=/vagrant/datacollection/app/Config/database.php owner=www-data group=www-data mode=0600 force=no
+- copy: src=email.php dest=/vagrant/datacollection/app/Config/email.php owner=www-data group=www-data mode=0600 force=no
+ 
+- name: Create database for Datacollection
+  mysql_db: name=datacollection state=present
+- mysql_db: name=datacollection state=import target=/vagrant/datacollection/app/Config/Schema/datacollection.sql
+ 
+- name: Create database for testing
+  mysql_db: name=test state=present
+  
+- name: Create user for Datacollection
+  mysql_user: name=datacollection password=datacollection priv=datacollection.*:ALL/test.*:ALL state=present
